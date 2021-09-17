@@ -1,4 +1,4 @@
-use std::{cell::Cell, rc::Rc, sync::Arc};
+use std::{cell::Cell, ops::{Add, Mul}, rc::Rc, sync::Arc};
 
 use my_library::*;
 
@@ -17,6 +17,28 @@ impl Point {
         Self {
             x: self.x + other.x,
             y: self.y + other.y,
+        }
+    }
+}
+
+impl Add for Point {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
+}
+
+impl Mul for Point {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x * rhs.x,
+            y: self.y * rhs.y,
         }
     }
 }
@@ -52,6 +74,9 @@ fn main() {
 
     let a = Point::new(0.0, 1.0);
     let b = Point::new(1.0, 0.0);
+
+    let d = a * b;
+    dbg!(d);
 
     let mut c = a.add(b);
 
@@ -128,6 +153,34 @@ fn with_threads() {
     thread::spawn(move || {
         dbg!(item);
     });
-    
+
     thread::sleep(std::time::Duration::from_millis(1000));
+
+    take_fn(|| {
+        dbg!(1 + 2);
+    });
+
+    take_fn_once(|| {
+        dbg!(1 + 2);
+    });
+
+    take_fn_mut(|| {
+        dbg!(1 + 2);
+    });
+}
+
+fn take_fn<F: Fn()>(f: F) {
+    f();
+    f();
+    f();
+    f();
+}
+
+fn take_fn_once<F: FnOnce()>(f: F) {
+    f();
+}
+
+fn take_fn_mut<F: FnMut()>(mut f: F) {
+    f();
+    f();
 }
