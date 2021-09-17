@@ -58,9 +58,13 @@ fn main() {
     let a = Point::new(0.0, 1.0);
     let b = Point::new(1.0, 0.0);
 
-    let c = a.add(b);
+    let mut c = a.add(b);
 
     dbg!(a, b, c);
+
+    move_point(&mut c, 0.5, 0.5);
+
+    dbg!(c);
 
     let triangle = Shape::Triangle {
         a: Point::new(0.0, 0.0),
@@ -92,4 +96,9 @@ fn print_area_dyn(has_area: &dyn Area) {
 
 fn print_area_trait_object(boxed_area: Box<dyn Area>) {
     println!("box has an area of {}", boxed_area.area());
+}
+
+fn move_point(point: &mut Point, x: f32, y: f32) {
+    point.x += x;
+    point.y += y;
 }
