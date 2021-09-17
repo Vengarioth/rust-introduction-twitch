@@ -1,47 +1,6 @@
-use std::{cell::Cell, ops::{Add, Mul}, rc::Rc, sync::Arc};
+use std::{cell::Cell, rc::Rc, sync::Arc};
 
-use my_library::*;
-
-#[derive(Debug, Clone, Copy)]
-pub struct Point {
-    pub x: f32,
-    pub y: f32,
-}
-
-impl Point {
-    fn new(x: f32, y: f32) -> Self {
-        Self { x, y }
-    }
-
-    fn add(self, other: Self) -> Self {
-        Self {
-            x: self.x + other.x,
-            y: self.y + other.y,
-        }
-    }
-}
-
-impl Add for Point {
-    type Output = Self;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-        }
-    }
-}
-
-impl Mul for Point {
-    type Output = Self;
-
-    fn mul(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x * rhs.x,
-            y: self.y * rhs.y,
-        }
-    }
-}
+use my_library::Point;
 
 #[derive(Debug, Clone)]
 pub enum Shape {
@@ -180,7 +139,15 @@ fn take_fn_once<F: FnOnce()>(f: F) {
     f();
 }
 
+fn take_fn_mut_impl(mut f: impl FnMut()) {
+    f();
+}
+
 fn take_fn_mut<F: FnMut()>(mut f: F) {
     f();
+}
+
+
+fn take_fn_mut_where<F>(mut f: F) where F: FnMut(), Vec<F>: Send {
     f();
 }

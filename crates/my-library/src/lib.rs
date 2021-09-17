@@ -1,3 +1,7 @@
+mod point;
+
+pub use point::*;
+
 #[cfg(test)]
 mod tests {
     #[test]
