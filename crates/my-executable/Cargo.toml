@@ -7,3 +7,4 @@ edition = "2018"
 
 [dependencies]
 my-library = { path = "../my-library" }
+smol = "1.0"

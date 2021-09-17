@@ -1,11 +1,14 @@
 use std::{cell::Cell, rc::Rc, sync::Arc};
 
+extern crate my_library;
+
 use my_library::Point;
+
+mod async_await;
 
 #[derive(Debug, Clone)]
 pub enum Shape {
     Triangle { a: Point, b: Point, c: Point },
-
     Circle { center: Point, radius: f32 },
 }
 
@@ -65,6 +68,8 @@ fn main() {
     print_area_trait_object(boxed_area);
 
     with_threads();
+
+    async_await::main().unwrap();
 }
 
 fn print_area<T: Area>(has_area: &T) {
@@ -147,7 +152,10 @@ fn take_fn_mut<F: FnMut()>(mut f: F) {
     f();
 }
 
-
-fn take_fn_mut_where<F>(mut f: F) where F: FnMut(), Vec<F>: Send {
+fn take_fn_mut_where<F>(mut f: F)
+where
+    F: FnMut(),
+    Vec<F>: Send,
+{
     f();
 }
