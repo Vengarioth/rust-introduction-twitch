@@ -1,3 +1,5 @@
+use std::{cell::Cell, rc::Rc, sync::Arc};
+
 use my_library::*;
 
 #[derive(Debug, Clone, Copy)]
@@ -8,7 +10,7 @@ pub struct Point {
 
 impl Point {
     fn new(x: f32, y: f32) -> Self {
-        Self {x, y}
+        Self { x, y }
     }
 
     fn add(self, other: Self) -> Self {
@@ -21,16 +23,9 @@ impl Point {
 
 #[derive(Debug, Clone)]
 pub enum Shape {
-    Triangle {
-        a: Point,
-        b: Point,
-        c: Point,
-    },
+    Triangle { a: Point, b: Point, c: Point },
 
-    Circle {
-        center: Point,
-        radius: f32,
-    },
+    Circle { center: Point, radius: f32 },
 }
 
 impl Shape {
@@ -81,9 +76,11 @@ fn main() {
 
     print_area(&circle);
     print_area_dyn(&triangle);
-    
+
     let boxed_area: Box<dyn Area> = Box::new(triangle);
     print_area_trait_object(boxed_area);
+
+    with_threads();
 }
 
 fn print_area<T: Area>(has_area: &T) {
@@ -101,4 +98,36 @@ fn print_area_trait_object(boxed_area: Box<dyn Area>) {
 fn move_point(point: &mut Point, x: f32, y: f32) {
     point.x += x;
     point.y += y;
+}
+
+struct Example<T> {
+    owned: T,
+    boxed: Box<T>,
+    rc: Rc<T>,
+    rc_mut: Rc<Cell<T>>,
+    arc: Arc<T>,
+    arc_mut: Arc<Cell<T>>,
+}
+
+#[derive(Debug)]
+struct Item {
+    items: Vec<Point>,
+}
+
+impl Item {
+    fn new() -> Self {
+        Self { items: Vec::new() }
+    }
+}
+
+fn with_threads() {
+    use std::thread;
+
+    let item = Item::new();
+
+    thread::spawn(move || {
+        dbg!(item);
+    });
+    
+    thread::sleep(std::time::Duration::from_millis(1000));
 }
